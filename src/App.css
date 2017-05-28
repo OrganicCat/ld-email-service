@@ -22,3 +22,21 @@
   from { transform: rotate(0deg); }
   to { transform: rotate(360deg); }
 }
+
+.list_selected {
+  background-color: #008000;
+}
+
+input {
+  width: 400px;
+}
+
+.autocomplete {
+  position: relative;
+  width: 50%;
+}
+.autocomplete__list {
+  position: absolute;
+  top: 0;
+  right: 40px;
+}

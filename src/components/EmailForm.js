@@ -1,4 +1,6 @@
 import React from 'react';
+import { searchService } from '../utils/searchService'
+import AutoComplete from './AutoComplete'
 
 class EmailForm extends React.Component {
     constructor(props) {
@@ -7,54 +9,14 @@ class EmailForm extends React.Component {
             name: '',
             list: [],
             cursor: 0,
-            value1: ''
+            toField: [],
+            ccField: []
         }
-        this.handleKeyDown = this.handleKeyDown.bind(this)
-        this.handleKeyUp = this.handleKeyUp.bind(this)
-    }
 
-    handleKeyDown(event) {
-        let cursor = this.state.cursor
-
-        if (event.keyCode === 38) {
-            cursor--
-            this.setState({cursor})
-            console.log(this.state.cursor)
-        } else if (event.keyCode === 40) {
-            cursor++
-            this.setState({cursor})
-            console.log(this.state.cursor)
-        } else if (event.keyCode === 9) {
-            event.preventDefault()
-            cursor++
-            this.setState({cursor})
-            console.log(this.state.cursor)
-        } else {
-            
-            
-        }
-    }
-
-    handleKeyUp(event) {
-        if (event.target.value.length > 0) {
-            this.fetchNames(event.target.value)
-            .then(res => {
-                this.setState({list: res.users})
-            })
-        }
-        
-    }
-
-    fetchNames(name) {
-        return fetch(`https://trunkclub-ui-takehome.now.sh/search/${name}`, {
-            method: 'GET',
-            mode: 'cors'
-        })
-        .then(res => res.json())
     }
 
     componentDidMount() {
-        this.fetchNames('Ada').then(res => {
+        searchService('Ada').then(res => {
             this.setState({list:res.users})
             }
         )
@@ -62,28 +24,19 @@ class EmailForm extends React.Component {
 
     render() { 
         return (
-            <div>
-                <div>
-                    <input type="text" placeholder="To:" onKeyDown={this.handleKeyDown} onKeyUp={this.handleKeyUp} />
-                    <div>
-                        <ul>
-                            {this.state.list.map((item, index) => <li key={index}>{item.firstName}</li>)}
-                        </ul>
-                    </div>
-                </div>
-                <div>
-                    <input type="text" placeholder="CC:" />
-                </div>
-                <div>
+            <form>
+                <AutoComplete fieldName="To:" fieldType={this.state.toField} />
+                <AutoComplete fieldName="CC:" fieldType={this.state.ccField} />
+                <div className="autocomplete">
                     <input type="text" placeholder="Subject:" />
                 </div>
-                <div>
+                <div className="autocomplete">
                     <textarea placeholder="Enter your message here..." />
                 </div>
-                <div>
+                <div className="autocomplete">
                     <input type="submit" value="Send Email" />
                 </div>
-            </div>
+            </form>
         )
     }
     
