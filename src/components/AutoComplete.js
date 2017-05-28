@@ -12,6 +12,7 @@ class AutoComplete extends React.Component {
         this.handleKeyDown = this.handleKeyDown.bind(this)
         this.handleKeyUp = this.handleKeyUp.bind(this)
         this.checkActive = this.checkActive.bind(this)
+        this.handleClick = this.handleClick.bind(this)
     }
 
     handleKeyDown(event) {
@@ -38,8 +39,8 @@ class AutoComplete extends React.Component {
     }
 
     validateCustomEmail(email) {
+        // Did not write this regex
         var re = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
-        console.log(email + " " + re.test(email))
         return re.test(email);
     }
 
@@ -62,6 +63,10 @@ class AutoComplete extends React.Component {
         }
     }
 
+    handleClick(item) {
+        this.textInput.value += item.email
+    }
+
     checkActive(index) {
         return (this.state.cursor === index) ? 'list_selected' : ''
     }
@@ -69,10 +74,10 @@ class AutoComplete extends React.Component {
     render() { 
         return (
             <div className="autocomplete">
-                <input type="text" placeholder={this.props.fieldName} onKeyDown={this.handleKeyDown} onKeyUp={this.handleKeyUp} />
+                <input type="text" ref={(input) => { this.textInput = input}} placeholder={this.props.fieldName} onKeyDown={this.handleKeyDown} onKeyUp={this.handleKeyUp} />
                 <div className="autocomplete__list">
                     <ul>
-                        {this.state.list.map((item, index) => <li key={index} className={this.checkActive(index)}>{item.firstName}</li>)}
+                        {this.state.list.map((item, index) => <li key={index} className={this.checkActive(index)} onClick={this.handleClick.bind(this, item)}>{item.firstName}</li>)}
                     </ul>
                 </div>
             </div>
