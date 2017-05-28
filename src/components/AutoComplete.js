@@ -34,11 +34,12 @@ class AutoComplete extends React.Component {
     }
 
     removeEmail(email) {
-        // this.setState()
+        // Remove email, was going to use if creating email tags
     }
 
     validateCustomEmail(email) {
         var re = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+        console.log(email + " " + re.test(email))
         return re.test(email);
     }
 
@@ -51,6 +52,7 @@ class AutoComplete extends React.Component {
         } else if (event.target.value.length > 0) {
             let ccArray = event.target.value.split(",")
             let newItem = ccArray[ccArray.length-1].trim()
+            ccArray.forEach((item) => this.validateCustomEmail(item.trim()))
             if (newItem) {
                 searchService(newItem)
                 .then(res => {
