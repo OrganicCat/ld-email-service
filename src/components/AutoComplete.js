@@ -25,12 +25,28 @@ class AutoComplete extends React.Component {
             cursor++
             this.setState({cursor})
         } else if (event.keyCode === 9) {
-            event.preventDefault()
-            cursor++
-            this.setState({cursor})
+            if (this.state.list.length > 0) {
+                event.preventDefault()
+                cursor++
+                this.setState({cursor})
+            }
         } else if (event.keyCode === 13) {
             event.preventDefault()
-            event.target.value += this.state.list[cursor].email
+            if (this.props.fieldName === "To:") {
+                event.target.value = this.state.list[cursor].email
+            } else {
+                let ccArray = event.target.value.trim().split(",")
+                ccArray = ccArray.map((element, index) => {
+                    if (index === ccArray.length-1) {
+                        return this.state.list[cursor].email.trim()
+                    } else {
+                        return element.trim()
+                    }
+                })
+                event.target.value = ccArray.join(", ")
+            }
+            
+            this.setState({list: []})
         }
     }
 
@@ -50,7 +66,7 @@ class AutoComplete extends React.Component {
             .then(res => {
                 this.setState({list: res.users})
             })
-        } else if (event.target.value.length > 0) {
+        } else if (event.target.value.length > 0 && this.props.fieldName === "CC:") {
             let ccArray = event.target.value.split(",")
             let newItem = ccArray[ccArray.length-1].trim()
             ccArray.forEach((item) => this.validateCustomEmail(item.trim()))
@@ -64,7 +80,21 @@ class AutoComplete extends React.Component {
     }
 
     handleClick(item) {
-        this.textInput.value += item.email
+        if (this.props.fieldName === "To:") {
+            this.textInput.value = item.email
+            this.setState({list: []})
+        } else {
+            let ccArray = this.textInput.value.trim().split(",")
+            ccArray = ccArray.map((element, index) => {
+                if (index === ccArray.length-1) {
+                    return item.email.trim()
+                } else {
+                    return element.trim()
+                }
+            })
+            this.textInput.value = ccArray.join(", ")
+            this.setState({list: []})
+        }
     }
 
     checkActive(index) {
