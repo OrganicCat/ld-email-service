@@ -1,5 +1,6 @@
 import React from 'react';
 import { searchService } from '../utils/searchService'
+import { connect } from 'react-redux'
 
 class AutoComplete extends React.Component {
     constructor(props) {
@@ -34,6 +35,7 @@ class AutoComplete extends React.Component {
             event.preventDefault()
             if (this.props.fieldName === "To:") {
                 event.target.value = this.state.list[cursor].email
+                this.props.setToField(event.target.value)
             } else {
                 let ccArray = event.target.value.trim().split(",")
                 ccArray = ccArray.map((element, index) => {
@@ -44,6 +46,7 @@ class AutoComplete extends React.Component {
                     }
                 })
                 event.target.value = ccArray.join(", ")
+                this.props.setCCField(event.target.value)
             }
             
             this.setState({list: []})
@@ -83,6 +86,7 @@ class AutoComplete extends React.Component {
         if (this.props.fieldName === "To:") {
             this.textInput.value = item.email
             this.setState({list: []})
+            this.props.setToField(this.textInput.value)
         } else {
             let ccArray = this.textInput.value.trim().split(",")
             ccArray = ccArray.map((element, index) => {
@@ -93,8 +97,11 @@ class AutoComplete extends React.Component {
                 }
             })
             this.textInput.value = ccArray.join(", ")
+            this.props.setCCField(this.textInput.value)
+            
             this.setState({list: []})
         }
+        
     }
 
     checkActive(index) {
@@ -115,5 +122,33 @@ class AutoComplete extends React.Component {
     }
 
 }
+
+let mapStateToProps = (store) => {
+        return {
+            pets: store.pets
+        }
+    }
+
+let mapDispatchToProps = (dispatch, state) => {
+        return {
+            setToField: (field) => {
+                dispatch({
+                    type: 'SET_TO_FIELD',
+                    tofield: field
+                })
+            },
+            setCCField: (field) => {
+                dispatch({
+                    type: 'SET_CC_FIELD',
+                    ccfield: field
+                })
+            }
+        }
+    }
+
+AutoComplete = connect(
+    mapStateToProps,
+    mapDispatchToProps
+)(AutoComplete)
 
 export default AutoComplete

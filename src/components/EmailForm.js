@@ -1,6 +1,6 @@
 import React from 'react';
-import { searchService } from '../utils/searchService'
 import AutoComplete from './AutoComplete'
+import { connect } from 'react-redux'
 
 class EmailForm extends React.Component {
     constructor(props) {
@@ -12,19 +12,19 @@ class EmailForm extends React.Component {
             toField: [],
             ccField: []
         }
-
+        this.handleSubmit = this.handleSubmit.bind(this)
     }
 
-    componentDidMount() {
-        searchService('Ada').then(res => {
-            this.setState({list:res.users})
-            }
-        )
+    handleSubmit(event) {
+        event.preventDefault()
     }
 
     render() { 
+        let toField = this.props.emails.tofield ? this.props.emails.tofield : ''
+        let ccField = this.props.emails.ccfield ? this.props.emails.ccfield : ''
+
         return (
-            <form>
+            <form onSubmit={this.handleSubmit}>
                 <AutoComplete fieldName="To:" fieldType={this.state.toField} />
                 <AutoComplete fieldName="CC:" fieldType={this.state.ccField} />
                 <div className="autocomplete">
@@ -33,14 +33,27 @@ class EmailForm extends React.Component {
                 <div className="autocomplete">
                     <textarea placeholder="Enter your message here..." />
                 </div>
+                <div>to: {toField}</div>
+                <div>cc: {ccField}</div>
                 <div className="autocomplete">
                     <input type="submit" value="Send Email" />
                 </div>
             </form>
         )
     }
-    
 
 }
+
+const mapStateToProps = (store) => {
+    console.log(store)
+  return {
+    emails: store.emails
+  }
+}
+
+EmailForm = connect(
+    mapStateToProps,
+    null
+)(EmailForm)
 
 export { EmailForm }
