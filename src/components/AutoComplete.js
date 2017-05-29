@@ -45,8 +45,8 @@ class AutoComplete extends React.Component {
                         return element.trim()
                     }
                 })
+                this.props.setCCField(ccArray)
                 event.target.value = ccArray.join(", ")
-                this.props.setCCField(event.target.value)
             }
             
             this.setState({list: []})
@@ -96,8 +96,9 @@ class AutoComplete extends React.Component {
                     return element.trim()
                 }
             })
+            this.props.setCCField(ccArray)
             this.textInput.value = ccArray.join(", ")
-            this.props.setCCField(this.textInput.value)
+            
             
             this.setState({list: []})
         }
